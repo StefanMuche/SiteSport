@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from datetime import datetime
+from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///articole.db'
@@ -21,6 +22,29 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(150), unique=True, nullable=False)
     password = db.Column(db.String(150), nullable=False)
+    is_admin = db.Column(db.Boolean, default=False)  # nou!
+
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    if request.method == "POST":
+        username = request.form["username"]
+        password = request.form["password"]
+        # Dacă vrei să permiți și crearea de admin din form, adaugă un checkbox:
+        is_admin = "is_admin" in request.form
+
+        if User.query.filter_by(username=username).first():
+            flash("Numele de utilizator există deja!")
+            return redirect(url_for('register'))
+
+        hashed_password = generate_password_hash(password)
+        new_user = User(username=username, password=hashed_password, is_admin=is_admin)
+        db.session.add(new_user)
+        db.session.commit()
+        flash("Cont creat cu succes! Acum te poți loga.")
+        return redirect(url_for("login"))
+    return render_template("register.html", user=current_user)
+
+
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -48,6 +72,9 @@ def contact():
 @app.route("/adauga", methods=["GET", "POST"])
 @login_required
 def adauga():
+    if not current_user.is_admin:
+        flash("Doar adminii pot posta articole!")
+        return redirect(url_for('index'))
     if request.method == "POST":
         titlu = request.form['titlu']
         continut = request.form['continut']
@@ -64,12 +91,13 @@ def login():
         username = request.form['username']
         password = request.form['password']
         user = User.query.filter_by(username=username).first()
-        if user and user.password == password:
+        if user and check_password_hash(user.password, password):
             login_user(user)
             return redirect(url_for('adauga'))
         else:
             flash("Cont sau parolă incorectă!")
     return render_template("login.html", user=current_user)
+
 
 @app.route("/logout")
 @login_required
