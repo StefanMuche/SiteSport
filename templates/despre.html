@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8">
+  <title>Despre</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header>
+    <h1>Despre</h1>
+  </header>
+  <nav>
+    <a href="{{ url_for('index') }}">Acasă</a>
+    <a href="{{ url_for('despre') }}">Despre</a>
+    <a href="{{ url_for('contact') }}">Contact</a>
+    <a href="{{ url_for('adauga') }}">Adaugă</a>
+    {% if user.is_authenticated %}
+        <a href="{{ url_for('logout') }}">Logout</a>
+    {% else %}
+        <a href="{{ url_for('login') }}">Login</a>
+    {% endif %}
+  </nav>
+  <main>
+    <h2>Cine sunt?</h2>
+    <p>Sunt Ștefan, inginer și pasionat de fotbal. Scriu opinii și analize pe acest blog.</p>
+    <p>Pentru colaborări sau detalii, vezi pagina de Contact!</p>
+  </main>
+  <footer>
+    &copy; 2025 Blogul Meu de Fotbal | Toate drepturile rezervate.
+  </footer>
+</body>
+</html>

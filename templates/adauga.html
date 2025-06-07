@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <title>Adaugă articol</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Adaugă articol nou</h1>
+    </header>
+    <nav>
+        <a href="{{ url_for('index') }}">Acasă</a>
+        <a href="{{ url_for('despre') }}">Despre</a>
+        <a href="{{ url_for('contact') }}">Contact</a>
+        <a href="{{ url_for('adauga') }}">Adaugă</a>
+        {% if user.is_authenticated %}
+            <a href="{{ url_for('logout') }}">Logout</a>
+        {% else %}
+            <a href="{{ url_for('login') }}">Login</a>
+        {% endif %}
+      </nav>
+    <main>
+        <form method="POST">
+            <label for="titlu">Titlu:</label><br>
+            <input type="text" id="titlu" name="titlu" required style="width: 100%; padding: 6px;"><br><br>
+            <label for="continut">Conținut:</label><br>
+            <textarea id="continut" name="continut" rows="10" required style="width: 100%; padding: 6px;"></textarea><br><br>
+            <button type="submit">Publică articolul</button>
+        </form>
+    </main>
+    <footer>
+        &copy; 2025 Blogul Meu de Fotbal | Toate drepturile rezervate.
+    </footer>
+</body>
+</html>

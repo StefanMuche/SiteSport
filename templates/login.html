@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <title>Login admin</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Autentificare admin</h1>
+    </header>
+    <nav>
+        <a href="{{ url_for('index') }}">Acasă</a>
+        <a href="{{ url_for('despre') }}">Despre</a>
+        <a href="{{ url_for('contact') }}">Contact</a>
+        <a href="{{ url_for('adauga') }}">Adaugă</a>
+        {% if user.is_authenticated %}
+            <a href="{{ url_for('logout') }}">Logout</a>
+        {% else %}
+            <a href="{{ url_for('login') }}">Login</a>
+        {% endif %}
+      </nav>
+    <main>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <ul>
+                {% for message in messages %}
+                    <li style="color:red">{{ message }}</li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+        <form method="POST">
+            <label for="username">Cont admin:</label><br>
+            <input type="text" id="username" name="username" required><br><br>
+            <label for="password">Parolă:</label><br>
+            <input type="password" id="password" name="password" required><br><br>
+            <button type="submit">Autentifică-te</button>
+        </form>
+    </main>
+</body>
+</html>
